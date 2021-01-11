@@ -12,6 +12,9 @@ class EmojiArtDocument: ObservableObject {
     static let palette: String = "✨🌛🌏🌞🌸"
     @Published private var emojiArt: EmojiArt = EmojiArt()
     
+    private(set) var backgroundImage: UIImage?
+    
+    var emojis: [EmojiArt.Emoji] { emojiArt.emojis }
     // MARK: -Intent(s)
     
     func addEmoji(_ emoji: String, at location: CGPoint, size: CGFloat) {
@@ -33,5 +36,19 @@ class EmojiArtDocument: ObservableObject {
     
     func setBackGroundURL(_ url: URL?) {
         emojiArt.backgroundURL = url?.imageURL
+        fetchBackgroundImageData()
+    }
+    
+    private func fetchBackgroundImageData() {
+        backgroundImage = nil
+        if let url = self.emojiArt.backgroundURL {
+            DispatchQueue.global(qos: .userInitiated).async { // 切换线程执行耗时操作
+                if let imageData = try? Data(contentsOf: url) {
+                    DispatchQueue.main.async {
+                        self.backgroundImage = UIImage(data: imageData) //
+                    }
+                }
+            }
+        }
     }
 }

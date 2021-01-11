@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct EmojiArt {
     var backgroundURL: URL?
@@ -13,7 +14,7 @@ struct EmojiArt {
     
     struct Emoji: Identifiable {
         let text: String
-        var x: Int
+        var x: Int // offset from the center
         var y: Int
         var size: Int
         let id: Int
@@ -33,4 +34,9 @@ struct EmojiArt {
         uniqueEmojiId += 1
         emojis.append(Emoji(text: text, x: x, y: y, size: size, id: uniqueEmojiId))
     }
+}
+
+extension EmojiArt.Emoji {
+    var fontSize: CGFloat { CGFloat(self.size) }
+    var location: CGPoint { CGPoint(x: CGFloat(x), y: CGFloat(y)) }
 }
